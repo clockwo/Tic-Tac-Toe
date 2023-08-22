@@ -34,7 +34,7 @@ img {
 input,
 textarea,
 select,
-button {
+.square {
   font: inherit;
 }
 
@@ -67,7 +67,7 @@ body {
   align-items: center;
   background-color: hsl(220deg 10% 14%);
 }
-.tic {
+.board {
   width: min(calc(100vw), 600px);
   aspect-ratio: 1;
   margin-inline: auto;
@@ -75,49 +75,57 @@ body {
   grid-template: repeat(3, 1fr) / repeat(3, 1fr);
 }
 
-.tic > div {
+.board > .square {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: inherit;
   border: 1px solid hsl(215, 10%, 25%);
 }
 
-.tic > div:nth-child(1) {
+.board > .square:hover {
+  filter: blur(0.3px);
+  will-change: filter;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.board > .square:nth-child(1) {
   border-top: none;
   border-left: none;
 }
 
-.tic > div:nth-child(2) {
+.board > .square:nth-child(2) {
   border-top: none;
 }
 
-.tic > div:nth-child(3) {
+.board > .square:nth-child(3) {
   border-top: none;
   border-right: none;
 }
 
-.tic > div:nth-child(4) {
+.board > .square:nth-child(4) {
   border-left: none;
 }
 
-.tic > div:nth-child(6) {
+.board > .square:nth-child(6) {
   border-right: none;
 }
 
-.tic > div:nth-child(7) {
+.board > .square:nth-child(7) {
   border-bottom: none;
   border-left: none;
 }
 
-.tic > div:nth-child(8) {
+.board > .square:nth-child(8) {
   border-bottom: none;
 }
 
-.tic > div:nth-child(9) {
+.board > .square:nth-child(9) {
   border-bottom: none;
   border-right: none;
 }
 
-.tic > div > span {
+.board > .square > span {
+  z-index: 0;
   color: hsl(198deg 48% 45%);
 }
