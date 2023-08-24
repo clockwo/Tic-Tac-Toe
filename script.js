@@ -58,18 +58,33 @@ const gameBoard = (() => {
     ["", "", ""],
   ];
 
+  const getDiagonals = (mat) => {
+    const tempMatrix = [[], []];
+
+    for (let i = 0; i < 3; i++) {
+      tempMatrix[0].push(mat[i][i]);
+    }
+
+    let temp = 2;
+    for (let i = 0; i < 3; i++) {
+      tempMatrix[1].push(mat[i][temp]);
+      temp--;
+    }
+    return tempMatrix;
+  };
+
   let lastUpdatedValue = ["", "", ""];
 
   const checkWinner = () => {
-    for (const row of matrix) {
-      if (row.every((value) => value === "X")) return "X";
-    }
-    for (const row of invertedMatrix) {
-      if (row.every((value) => value === "X")) return "X";
-    }
+    const linesMatrix = getDiagonals(matrix);
+    if (matrix.some((row) => row.every((value) => value === "X"))) return "X";
+    if (invertedMatrix.some((row) => row.every((value) => value === "X")))
+      return "X";
+    if (linesMatrix.some((row) => row.every((value) => value === "X")))
+      return "X";
   };
 
-  const setValue = (row, column) => {
+  const setGameBoardValue = (row, column) => {
     matrix[row][column] = "X";
     invertedMatrix[column][row] = "X";
     lastUpdatedValue = [row, column, "X"];
@@ -79,7 +94,7 @@ const gameBoard = (() => {
   const getLastUpdatedValue = () => lastUpdatedValue;
   const getMatrix = () => matrix;
 
-  return { getMatrix, setValue, getLastUpdatedValue };
+  return { getMatrix, setGameBoardValue, getLastUpdatedValue };
 })();
 
 displayController.renderSquareElements();
@@ -90,7 +105,7 @@ boardElement.addEventListener("click", ({ target }) => {
 
   const targetRow = +target.dataset.row;
   const targetColumn = +target.dataset.column;
-  gameBoard.setValue(targetRow, targetColumn);
+  gameBoard.setGameBoardValue(targetRow, targetColumn);
   console.debug(...gameBoard.getLastUpdatedValue());
   displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
 });
