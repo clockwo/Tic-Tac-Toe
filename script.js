@@ -28,7 +28,7 @@ const displayController = (() => {
     const updatedElement = document.querySelector(
       `[data-row="${row}"][data-column="${column}"]`,
     );
-    updatedElement.innerHTML = value;
+    updatedElement.innerText = value;
   };
 
   const getBoardElement = () => boardElement;
@@ -52,11 +52,28 @@ const gameBoard = (() => {
     ["", "", ""],
   ];
 
+  const invertedMatrix = [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+  ];
+
   let lastUpdatedValue = ["", "", ""];
+
+  const checkWinner = () => {
+    for (const row of matrix) {
+      if (row.every((value) => value === "X")) return "X";
+    }
+    for (const row of invertedMatrix) {
+      if (row.every((value) => value === "X")) return "X";
+    }
+  };
 
   const setValue = (row, column) => {
     matrix[row][column] = "X";
+    invertedMatrix[column][row] = "X";
     lastUpdatedValue = [row, column, "X"];
+    console.log(checkWinner());
   };
 
   const getLastUpdatedValue = () => lastUpdatedValue;
@@ -69,10 +86,11 @@ displayController.renderSquareElements();
 
 const boardElement = displayController.getBoardElement();
 boardElement.addEventListener("click", ({ target }) => {
-  if (!target.matches(".square")) return;
+  if (!target.matches(".square") || target.innerText) return;
 
   const targetRow = +target.dataset.row;
   const targetColumn = +target.dataset.column;
   gameBoard.setValue(targetRow, targetColumn);
+  console.debug(...gameBoard.getLastUpdatedValue());
   displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
 });
