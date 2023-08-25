@@ -109,3 +109,5 @@ boardElement.addEventListener("click", ({ target }) => {
   console.debug(...gameBoard.getLastUpdatedValue());
   displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
 });
+
+// TODO: Create player factory function
