@@ -61,13 +61,16 @@ const gameBoard = (() => {
   const getDiagonals = (mat) => {
     const tempMatrix = [[], []];
 
+    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < 3; i++) {
       tempMatrix[0].push(mat[i][i]);
     }
 
     let temp = 2;
+    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < 3; i++) {
       tempMatrix[1].push(mat[i][temp]);
+      // eslint-disable-next-line no-plusplus
       temp--;
     }
     return tempMatrix;
@@ -75,6 +78,7 @@ const gameBoard = (() => {
 
   let lastUpdatedValue = ["", "", ""];
 
+  // eslint-disable-next-line consistent-return
   const checkWinner = () => {
     const linesMatrix = getDiagonals(matrix);
     if (matrix.some((row) => row.every((value) => value === "X"))) return "X";
