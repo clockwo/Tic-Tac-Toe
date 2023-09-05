@@ -2,6 +2,7 @@ const displayController = (() => {
   const selectors = {
     board: "[data-js-board]",
     square: "[data-js-square]",
+    reset: "[data-js-reset]",
   };
   const boardElement = document.querySelector(selectors.board);
 
@@ -42,6 +43,18 @@ const displayController = (() => {
     updateSquareElement,
   };
 })();
+
+// Player
+
+const Player = (name, setter) => {
+  const getSetter = () => setter;
+  const getName = () => name;
+
+  return {
+    getSetter,
+    getName,
+  };
+};
 
 // Game board
 
@@ -86,6 +99,7 @@ const gameBoard = (() => {
       return "X";
     if (linesMatrix.some((row) => row.every((value) => value === "X")))
       return "X";
+    if (matrix.every((row) => row.every((value) => value))) return "draw";
   };
 
   const setGameBoardValue = (row, column) => {
