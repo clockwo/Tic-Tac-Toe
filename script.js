@@ -92,21 +92,31 @@ const gameBoard = (() => {
   let lastUpdatedValue = ["", "", ""];
 
   // eslint-disable-next-line consistent-return
-  const checkWinner = () => {
-    const linesMatrix = getDiagonals(matrix);
-    if (matrix.some((row) => row.every((value) => value === "X"))) return "X";
-    if (invertedMatrix.some((row) => row.every((value) => value === "X")))
-      return "X";
-    if (linesMatrix.some((row) => row.every((value) => value === "X")))
-      return "X";
-    if (matrix.every((row) => row.every((value) => value))) return "draw";
+  const checkWinner = (activePlayerMark) => {
+    // Helper function to check if all values in a row are equal
+    const isWinningRow = (row) =>
+      row.every((cell) => cell === activePlayerMark);
+
+    const diagonals = getDiagonals(matrix);
+
+    // Check row
+    if (matrix.some(isWinningRow)) return activePlayerMark;
+
+    // Check columns
+    if (invertedMatrix.some(isWinningRow)) return activePlayerMark;
+
+    // Check diagonals
+    if (diagonals.some(isWinningRow)) return activePlayerMark;
+
+    // Check for draw
+    if (matrix.every((row) => row.every((cell) => cell))) return "draw";
   };
 
-  const setGameBoardValue = (row, column) => {
-    matrix[row][column] = "X";
-    invertedMatrix[column][row] = "X";
-    lastUpdatedValue = [row, column, "X"];
-    console.log(checkWinner());
+  const setGameBoardValue = (row, column, activePlayerMark) => {
+    matrix[row][column] = activePlayerMark;
+    invertedMatrix[column][row] = activePlayerMark;
+    lastUpdatedValue = [row, column, activePlayerMark];
+    console.log(checkWinner(activePlayerMark));
   };
 
   const getLastUpdatedValue = () => lastUpdatedValue;
@@ -123,7 +133,7 @@ boardElement.addEventListener("click", ({ target }) => {
 
   const targetRow = +target.dataset.row;
   const targetColumn = +target.dataset.column;
-  gameBoard.setGameBoardValue(targetRow, targetColumn);
+  gameBoard.setGameBoardValue(targetRow, targetColumn, "TEST");
   console.debug(...gameBoard.getLastUpdatedValue());
   displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
 });
