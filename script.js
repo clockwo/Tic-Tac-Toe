@@ -3,6 +3,8 @@ const displayController = (() => {
     board: "[data-js-board]",
     square: "[data-js-square]",
     reset: "[data-js-reset]",
+    end: "[data-js-end]",
+    winner: "[data-js-winner]",
   };
   const boardElement = document.querySelector(selectors.board);
 
@@ -36,11 +38,24 @@ const displayController = (() => {
 
   const getSquareElements = () => document.querySelectorAll(selectors.square);
 
+  const showWinner = (result) => {
+    if (!result) return;
+
+    const endDialogElement = document.querySelector(selectors.end);
+    const winnerElement = document.querySelector(selectors.winner);
+
+    winnerElement.innerText =
+      result === "draw" ? "Is draw!" : `Winner is ${result}`;
+
+    endDialogElement.showModal();
+  };
+
   return {
     renderSquareElements,
     getSquareElements,
     getBoardElement,
     updateSquareElement,
+    showWinner,
   };
 })();
 
@@ -59,17 +74,19 @@ const Player = (name, setter) => {
 // Game board
 
 const gameBoard = (() => {
-  const matrix = [
+  let matrix = [
     ["", "", ""],
     ["", "", ""],
     ["", "", ""],
   ];
 
-  const invertedMatrix = [
+  let invertedMatrix = [
     ["", "", ""],
     ["", "", ""],
     ["", "", ""],
   ];
+
+  let winner = "";
 
   const getDiagonals = (mat) => {
     const tempMatrix = [[], []];
@@ -116,26 +133,49 @@ const gameBoard = (() => {
     matrix[row][column] = activePlayerMark;
     invertedMatrix[column][row] = activePlayerMark;
     lastUpdatedValue = [row, column, activePlayerMark];
-    console.log(checkWinner(activePlayerMark));
+    winner = checkWinner(activePlayerMark);
+  };
+
+  const reset = () => {
+    matrix = matrix.map((row) => row.map(() => ""));
+    invertedMatrix = [...matrix];
   };
 
   const getLastUpdatedValue = () => lastUpdatedValue;
   const getMatrix = () => matrix;
 
-  return { getMatrix, setGameBoardValue, getLastUpdatedValue };
+  const getWinner = () => winner;
+
+  return {
+    getMatrix,
+    setGameBoardValue,
+    getLastUpdatedValue,
+    getWinner,
+    reset,
+  };
 })();
 
 displayController.renderSquareElements();
-
+let tempMark = "X";
+let lastMark = "O";
+let temp = "";
 const boardElement = displayController.getBoardElement();
 boardElement.addEventListener("click", ({ target }) => {
   if (!target.matches(".square") || target.innerText) return;
 
   const targetRow = +target.dataset.row;
   const targetColumn = +target.dataset.column;
-  gameBoard.setGameBoardValue(targetRow, targetColumn, "TEST");
-  console.debug(...gameBoard.getLastUpdatedValue());
+  gameBoard.setGameBoardValue(targetRow, targetColumn, tempMark);
   displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
+  if (gameBoard.getWinner()) {
+    displayController.showWinner(gameBoard.getWinner());
+    gameBoard.reset();
+  }
+
+  console.debug(...gameBoard.getLastUpdatedValue());
+  temp = tempMark;
+  tempMark = lastMark;
+  lastMark = temp;
 });
 
 // TODO: Create player factory function
