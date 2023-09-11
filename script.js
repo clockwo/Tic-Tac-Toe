@@ -3,10 +3,17 @@ const displayController = (() => {
     board: "[data-js-board]",
     square: "[data-js-square]",
     reset: "[data-js-reset]",
+    start: "[data-js-start]",
+    submit: "[data-js-submit]",
     end: "[data-js-end]",
     winner: "[data-js-winner]",
+    firstPlayer: "[data-js-firstPlayer]",
+    secondPlayer: "[data-js-secondPlayer]",
   };
   const boardElement = document.querySelector(selectors.board);
+  const submit = document.querySelector(selectors.submit);
+  const firstPlayerElement = document.querySelector(selectors.firstPlayer);
+  const secondPlayerElement = document.querySelector(selectors.secondPlayer);
 
   const createSquareElement = (row, column) => {
     const squareElement = document.createElement("button");
@@ -34,9 +41,20 @@ const displayController = (() => {
     updatedElement.innerText = value;
   };
 
+  const openOptions = () => {
+    const startElement = document.querySelector(selectors.start);
+    startElement.showModal();
+  };
+
   const getBoardElement = () => boardElement;
 
+  const getSubmitElement = () => submit;
+
   const getSquareElements = () => document.querySelectorAll(selectors.square);
+
+  const clearSquareElements = () => {
+    boardElement.replaceChildren();
+  };
 
   const showWinner = (result) => {
     if (!result) return;
@@ -50,23 +68,27 @@ const displayController = (() => {
     endDialogElement.showModal();
   };
 
+  const getPlayersName = () => [firstPlayerElement, secondPlayerElement];
+
   return {
     renderSquareElements,
     getSquareElements,
     getBoardElement,
+    getSubmitElement,
     updateSquareElement,
     showWinner,
+    openOptions,
+    getPlayersName,
+    clearSquareElements,
   };
 })();
 
 // Player
 
-const Player = (name, setter) => {
-  const getSetter = () => setter;
+const Player = (name) => {
   const getName = () => name;
 
   return {
-    getSetter,
     getName,
   };
 };
@@ -138,7 +160,7 @@ const gameBoard = (() => {
 
   const reset = () => {
     matrix = matrix.map((row) => row.map(() => ""));
-    invertedMatrix = [...matrix];
+    invertedMatrix = invertedMatrix.map((row) => row.map(() => ""));
   };
 
   const getLastUpdatedValue = () => lastUpdatedValue;
@@ -155,12 +177,22 @@ const gameBoard = (() => {
   };
 })();
 
+const resetGame = () => {
+  gameBoard.reset();
+  displayController.clearSquareElements();
+  displayController.renderSquareElements();
+};
+
+displayController.openOptions();
+
+displayController.getSubmitElement().addEventListener("click", () => {});
+
 displayController.renderSquareElements();
+
 let tempMark = "X";
 let lastMark = "O";
 let temp = "";
-const boardElement = displayController.getBoardElement();
-boardElement.addEventListener("click", ({ target }) => {
+displayController.getBoardElement().addEventListener("click", ({ target }) => {
   if (!target.matches(".square") || target.innerText) return;
 
   const targetRow = +target.dataset.row;
@@ -169,7 +201,7 @@ boardElement.addEventListener("click", ({ target }) => {
   displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
   if (gameBoard.getWinner()) {
     displayController.showWinner(gameBoard.getWinner());
-    gameBoard.reset();
+    resetGame();
   }
 
   console.debug(...gameBoard.getLastUpdatedValue());
