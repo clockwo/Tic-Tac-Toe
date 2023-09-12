@@ -68,7 +68,7 @@ body {
   color: #ffffff;
 }
 
-.board {
+.game-board {
   width: min(calc(100vw), 600px);
   aspect-ratio: 1;
   margin-inline: auto;
@@ -76,7 +76,7 @@ body {
   grid-template: repeat(3, 1fr) / repeat(3, 1fr);
 }
 
-.board > .square {
+.game-board > .square {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -85,90 +85,80 @@ body {
   border: 1px solid hsl(215, 10%, 25%);
 }
 
-.board > .square:hover {
+.game-board > .square:hover {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
-.board > .square:nth-child(1) {
+.game-board > .square:nth-child(1) {
   border-top: none;
   border-left: none;
 }
 
-.board > .square:nth-child(2) {
+.game-board > .square:nth-child(2) {
   border-top: none;
 }
 
-.board > .square:nth-child(3) {
+.game-board > .square:nth-child(3) {
   border-top: none;
   border-right: none;
 }
 
-.board > .square:nth-child(4) {
+.game-board > .square:nth-child(4) {
   border-left: none;
 }
 
-.board > .square:nth-child(6) {
+.game-board > .square:nth-child(6) {
   border-right: none;
 }
 
-.board > .square:nth-child(7) {
+.game-board > .square:nth-child(7) {
   border-bottom: none;
   border-left: none;
 }
 
-.board > .square:nth-child(8) {
+.game-board > .square:nth-child(8) {
   border-bottom: none;
 }
 
-.board > .square:nth-child(9) {
+.game-board > .square:nth-child(9) {
   border-bottom: none;
   border-right: none;
 }
 
-.board > .square > span {
+.game-board > .square > span {
   z-index: 0;
   color: hsl(198deg 48% 45%);
 }
 
-.menu {
+.game-dialog {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.menu-start-content {
+.game-dialog-content {
   display: grid;
   justify-items: center;
   gap: 1rem;
   grid-template-columns: repeat(2, 1fr);
 }
 
-.menu-start-winner {
+.game-dialog-title {
   grid-column: span 2;
 }
 
-.start-button {
+.game-start-button {
   align-self: center;
 }
 
-.name-container {
+.name-input-container {
   display: flex;
   align-items: center;
   flex-direction: column;
 }
 
-.name-container > input {
+.name-input-container > input {
   width: 100%;
 }
 
-.menu-end-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.menu::backdrop {
+.game-dialog::backdrop {
   background-color: rgba(255, 255, 255, 0.5);
-}
-
-.menu-end-winner {
-  margin-bottom: 1em;
 }

@@ -8,30 +8,31 @@
     <script src="script.js" defer></script>
   </head>
   <body>
-    <section data-js-board class="board"></section>
+    <section data-js-game-board class="game-board"></section>
 
-    <dialog class="menu menu-start" data-js-start>
-      <form class="menu-start-content" method="dialog">
-        <h3 class="menu-start-winner">Game settings</h3>
+    <dialog class="game-dialog game-dialog-start" data-js-game-dialog-start>
+      <form class="game-dialog-content" method="dialog">
+        <h3 class="game-dialog-title">Game settings</h3>
 
-        <span class="name-container">
-            <label for="first-name">First player name:</label>
-            <input data-js-firstPlayer type="text" name="first-name" id="first-name" placeholder="Enter first player's name" required>
+        <span class="name-input-container">
+            <label for="player-one-name-input">First player name:</label>
+            <input data-js-player-one-input type="text" name="player-one-name-input" id="player-one-name-input" placeholder="Enter first player's name" required>
         </span>
 
-        <span class="name-container">
-            <label for="second-name">Second player name:</label>
-            <input data-js-secondPlayer type="text" name="second-name" id="second-name" placeholder="Enter second player's name" required>
+        <span class="name-input-container">
+            <label for="player-two-name-input">Second player name:</label>
+            <input data-js-player-two-input type="text" name="player-two-name-input" id="player-two-name-input" placeholder="Enter second player's name" required>
         </span>
 
-        <button class="start-button" data-js-submit formmethod="dialog" type="submit">Start game</button>
+        <button class="game-start-button" data-js-game-start-button formmethod="dialog" type="submit">Start game</button>
       </form>
     </dialog>
 
-    <dialog class="menu menu-end" data-js-end>
-      <form class="menu-end-content" method="dialog">
-        <h3 class="menu-end-winner" data-js-winner>The winner is X</h3>
-        <button data-js-reset formmethod="dialog" type="submit">Start again</button>
+    <dialog class="game-dialog game-dialog-end" data-js-game-dialog-end>
+      <form class="game-dialog-content" method="dialog">
+        <h3 class="game-dialog-title" data-js-game-winner>The winner is X</h3>
+        <button data-js-game-restart-button formmethod="dialog" type="submit">Start again</button>
+        <button data-js-game-quit-button formmethod="dialog" type="submit">End the game</button>
       </form>
     </dialog>
   </body>

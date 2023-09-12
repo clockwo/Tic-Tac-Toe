@@ -1,14 +1,14 @@
 const displayController = (() => {
   const selectors = {
-    board: "[data-js-board]",
+    board: "[data-js-game-board]",
     square: "[data-js-square]",
-    reset: "[data-js-reset]",
-    start: "[data-js-start]",
-    submit: "[data-js-submit]",
-    end: "[data-js-end]",
-    winner: "[data-js-winner]",
-    firstPlayer: "[data-js-firstPlayer]",
-    secondPlayer: "[data-js-secondPlayer]",
+    restart: "[data-js-game-restart-button]",
+    start: "[data-js-game-dialog-start]",
+    end: "[data-js-game-dialog-end]",
+    submit: "[data-js-game-start-button]",
+    winner: "[data-js-game-winner]",
+    firstPlayer: "[data-js-player-one-input]",
+    secondPlayer: "[data-js-player-two-input]",
   };
   const boardElement = document.querySelector(selectors.board);
   const submit = document.querySelector(selectors.submit);
