@@ -65,6 +65,7 @@ body {
   justify-content: center;
   align-items: center;
   background-color: hsl(220deg 10% 14%);
+  color: #ffffff;
 }
 
 .board {
@@ -127,4 +128,47 @@ body {
 .board > .square > span {
   z-index: 0;
   color: hsl(198deg 48% 45%);
+}
+
+.menu {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-start-content {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.menu-start-winner {
+  grid-column: span 2;
+}
+
+.start-button {
+  align-self: center;
+}
+
+.name-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.name-container > input {
+  width: 100%;
+}
+
+.menu-end-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.menu::backdrop {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.menu-end-winner {
+  margin-bottom: 1em;
 }
