@@ -14,6 +14,7 @@ const displayController = (() => {
   const submit = document.querySelector(selectors.submit);
   const firstPlayerElement = document.querySelector(selectors.firstPlayer);
   const secondPlayerElement = document.querySelector(selectors.secondPlayer);
+  const startElement = document.querySelector(selectors.start);
 
   const createSquareElement = (row, column) => {
     const squareElement = document.createElement("button");
@@ -42,8 +43,11 @@ const displayController = (() => {
   };
 
   const openOptions = () => {
-    const startElement = document.querySelector(selectors.start);
     startElement.showModal();
+  };
+
+  const closeOptions = () => {
+    startElement.close();
   };
 
   const getBoardElement = () => boardElement;
@@ -68,7 +72,10 @@ const displayController = (() => {
     endDialogElement.showModal();
   };
 
-  const getPlayersName = () => [firstPlayerElement, secondPlayerElement];
+  const getPlayersName = () => [
+    firstPlayerElement.value,
+    secondPlayerElement.value,
+  ];
 
   return {
     renderSquareElements,
@@ -78,24 +85,37 @@ const displayController = (() => {
     updateSquareElement,
     showWinner,
     openOptions,
+    closeOptions,
     getPlayersName,
     clearSquareElements,
   };
 })();
 
-// Player
+const Player = (name, mark) => {
+  let score = 0;
 
-const Player = (name) => {
   const getName = () => name;
+  const getMark = () => mark;
+
+  const incrementScore = () => {
+    score += 1;
+  };
+  const getScore = () => score;
 
   return {
+    incrementScore,
+    getScore,
+    getMark,
     getName,
   };
 };
 
-// Game board
-
 const gameBoard = (() => {
+  const gameState = {
+    currentPlayer: "",
+    players: [],
+  };
+
   let matrix = [
     ["", "", ""],
     ["", "", ""],
@@ -158,6 +178,19 @@ const gameBoard = (() => {
     winner = checkWinner(activePlayerMark);
   };
 
+  const setGameState = (firstPlayer, secondPlayer) => {
+    gameState.currentPlayer = firstPlayer;
+    gameState.players = [firstPlayer, secondPlayer];
+  };
+
+  const getCurrentPlayer = () => gameState.currentPlayer;
+
+  const switchPlayer = () => {
+    const [firstPlayer, secondPlayer] = gameState.players;
+    gameState.currentPlayer =
+      gameState.currentPlayer === firstPlayer ? secondPlayer : firstPlayer;
+  };
+
   const reset = () => {
     matrix = matrix.map((row) => row.map(() => ""));
     invertedMatrix = invertedMatrix.map((row) => row.map(() => ""));
@@ -171,11 +204,31 @@ const gameBoard = (() => {
   return {
     getMatrix,
     setGameBoardValue,
+    setGameState,
     getLastUpdatedValue,
+    getCurrentPlayer,
     getWinner,
+    switchPlayer,
     reset,
   };
 })();
+
+const initGame = () => {
+  displayController.openOptions();
+  displayController.renderSquareElements();
+
+  const submitButton = displayController.getSubmitElement();
+  submitButton.addEventListener("click", () => {
+    const [firstPlayerName, secondPlayerName] =
+      displayController.getPlayersName();
+
+    const firstPlayer = Player(firstPlayerName, "X");
+    const secondPlayer = Player(secondPlayerName, "O");
+    gameBoard.setGameState(firstPlayer, secondPlayer);
+
+    displayController.closeOptions();
+  });
+};
 
 const resetGame = () => {
   gameBoard.reset();
@@ -183,21 +236,17 @@ const resetGame = () => {
   displayController.renderSquareElements();
 };
 
-displayController.openOptions();
-
-displayController.getSubmitElement().addEventListener("click", () => {});
-
-displayController.renderSquareElements();
-
-let tempMark = "X";
-let lastMark = "O";
-let temp = "";
 displayController.getBoardElement().addEventListener("click", ({ target }) => {
   if (!target.matches(".square") || target.innerText) return;
 
   const targetRow = +target.dataset.row;
   const targetColumn = +target.dataset.column;
-  gameBoard.setGameBoardValue(targetRow, targetColumn, tempMark);
+  gameBoard.setGameBoardValue(
+    targetRow,
+    targetColumn,
+    gameBoard.getCurrentPlayer().getMark(),
+  );
+  gameBoard.switchPlayer();
   displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
   if (gameBoard.getWinner()) {
     displayController.showWinner(gameBoard.getWinner());
@@ -205,9 +254,8 @@ displayController.getBoardElement().addEventListener("click", ({ target }) => {
   }
 
   console.debug(...gameBoard.getLastUpdatedValue());
-  temp = tempMark;
-  tempMark = lastMark;
-  lastMark = temp;
 });
+
+initGame();
 
 // TODO: Create player factory function
