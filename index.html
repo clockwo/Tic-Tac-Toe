@@ -9,5 +9,30 @@
   </head>
   <body>
     <section data-js-board class="board"></section>
+
+    <dialog class="menu menu-start" data-js-start>
+      <form class="menu-start-content" method="dialog">
+        <h3 class="menu-start-winner">Game settings</h3>
+
+        <span class="name-container">
+            <label for="first-name">First player name:</label>
+            <input data-js-firstPlayer type="text" name="first-name" id="first-name" placeholder="Enter first player's name" required>
+        </span>
+
+        <span class="name-container">
+            <label for="second-name">Second player name:</label>
+            <input data-js-secondPlayer type="text" name="second-name" id="second-name" placeholder="Enter second player's name" required>
+        </span>
+
+        <button class="start-button" data-js-submit formmethod="dialog" type="submit">Start game</button>
+      </form>
+    </dialog>
+
+    <dialog class="menu menu-end" data-js-end>
+      <form class="menu-end-content" method="dialog">
+        <h3 class="menu-end-winner" data-js-winner>The winner is X</h3>
+        <button data-js-reset formmethod="dialog" type="submit">Start again</button>
+      </form>
+    </dialog>
   </body>
 </html>
