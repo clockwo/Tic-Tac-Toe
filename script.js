@@ -194,6 +194,7 @@ const gameBoard = (() => {
   const reset = () => {
     matrix = matrix.map((row) => row.map(() => ""));
     invertedMatrix = invertedMatrix.map((row) => row.map(() => ""));
+    [gameState.currentPlayer] = gameState.players;
   };
 
   const getLastUpdatedValue = () => lastUpdatedValue;
@@ -210,6 +211,45 @@ const gameBoard = (() => {
     getWinner,
     switchPlayer,
     reset,
+  };
+})();
+
+// Select game against AI
+// Player turn
+// AI turn
+// 1) AI get current matrix
+// 2) Make random turn if section is empty
+// 3) send turn
+
+const computer = (() => {
+  let isComputerTurn = false;
+  const mark = "O";
+
+  const getRandomCoordinate = () => Math.floor(Math.random() * 3);
+
+  const setComputerMove = (boolen) => {
+    isComputerTurn = boolen;
+  };
+
+  const makeTurn = (matrix) => {
+    let isNotFound = true;
+    let coordinates = [];
+    while (isNotFound) {
+      coordinates = [getRandomCoordinate(), getRandomCoordinate()];
+      const [x, y] = coordinates;
+      if (!matrix[x][y]) {
+        isNotFound = false;
+      }
+    }
+    return [...coordinates];
+  };
+  const getMove = () => isComputerTurn;
+  const getMark = () => mark;
+
+  return {
+    makeTurn,
+    getMove,
+    getMark,
   };
 })();
 
@@ -246,16 +286,20 @@ displayController.getBoardElement().addEventListener("click", ({ target }) => {
     targetColumn,
     gameBoard.getCurrentPlayer().getMark(),
   );
-  gameBoard.switchPlayer();
+
+  // gameBoard.switchPlayer();
   displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
+
+  gameBoard.setGameBoardValue(
+    ...computer.makeTurn(gameBoard.getMatrix()),
+    computer.getMark(),
+  );
+  displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
+
   if (gameBoard.getWinner()) {
     displayController.showWinner(gameBoard.getWinner());
     resetGame();
   }
-
-  console.debug(...gameBoard.getLastUpdatedValue());
 });
 
 initGame();
-
-// TODO: Create player factory function

@@ -146,7 +146,7 @@ body {
 }
 
 .game-start-button {
-  align-self: center;
+  grid-column: span 2;
 }
 
 .name-input-container {
