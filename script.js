@@ -3,6 +3,7 @@ const displayController = (() => {
     board: "[data-js-game-board]",
     square: "[data-js-square]",
     restart: "[data-js-game-restart-button]",
+    quit: "[data-js-game-quit-button]",
     start: "[data-js-game-dialog-start]",
     end: "[data-js-game-dialog-end]",
     submit: "[data-js-game-start-button]",
@@ -15,6 +16,7 @@ const displayController = (() => {
   const firstPlayerElement = document.querySelector(selectors.firstPlayer);
   const secondPlayerElement = document.querySelector(selectors.secondPlayer);
   const startElement = document.querySelector(selectors.start);
+  const quitButtonElement = document.querySelector(selectors.quit);
 
   const createSquareElement = (row, column) => {
     const squareElement = document.createElement("button");
@@ -53,6 +55,7 @@ const displayController = (() => {
   const getBoardElement = () => boardElement;
 
   const getSubmitElement = () => submit;
+  const getQuitButtonElement = () => quitButtonElement;
 
   const getSquareElements = () => document.querySelectorAll(selectors.square);
 
@@ -82,6 +85,7 @@ const displayController = (() => {
     getSquareElements,
     getBoardElement,
     getSubmitElement,
+    getQuitButtonElement,
     updateSquareElement,
     showWinner,
     openOptions,
@@ -222,14 +226,10 @@ const gameBoard = (() => {
 // 3) send turn
 
 const computer = (() => {
-  let isComputerTurn = false;
+  const isComputerTurn = false;
   const mark = "O";
 
   const getRandomCoordinate = () => Math.floor(Math.random() * 3);
-
-  const setComputerMove = (boolen) => {
-    isComputerTurn = boolen;
-  };
 
   const makeTurn = (matrix) => {
     let isNotFound = true;
@@ -243,6 +243,7 @@ const computer = (() => {
     }
     return [...coordinates];
   };
+
   const getMove = () => isComputerTurn;
   const getMark = () => mark;
 
@@ -252,6 +253,12 @@ const computer = (() => {
     getMark,
   };
 })();
+
+const resetGame = () => {
+  gameBoard.reset();
+  displayController.clearSquareElements();
+  displayController.renderSquareElements();
+};
 
 const initGame = () => {
   displayController.openOptions();
@@ -268,12 +275,12 @@ const initGame = () => {
 
     displayController.closeOptions();
   });
-};
 
-const resetGame = () => {
-  gameBoard.reset();
-  displayController.clearSquareElements();
-  displayController.renderSquareElements();
+  const quitButton = displayController.getQuitButtonElement();
+  quitButton.addEventListener("click", () => {
+    displayController.openOptions();
+    resetGame();
+  });
 };
 
 displayController.getBoardElement().addEventListener("click", ({ target }) => {
@@ -290,11 +297,16 @@ displayController.getBoardElement().addEventListener("click", ({ target }) => {
   // gameBoard.switchPlayer();
   displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
 
-  gameBoard.setGameBoardValue(
-    ...computer.makeTurn(gameBoard.getMatrix()),
-    computer.getMark(),
-  );
-  displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
+  if (gameBoard.getWinner()) {
+    displayController.showWinner(gameBoard.getWinner());
+    resetGame();
+  } else {
+    gameBoard.setGameBoardValue(
+      ...computer.makeTurn(gameBoard.getMatrix()),
+      computer.getMark(),
+    );
+    displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
+  }
 
   if (gameBoard.getWinner()) {
     displayController.showWinner(gameBoard.getWinner());

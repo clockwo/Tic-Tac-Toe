@@ -59,13 +59,21 @@ body {
 
 /* layout */
 
+:root {
+  --text: #ffffff;
+  --background: #050505;
+  --primary: #3f4046;
+  --secondary: #272428;
+  --accent: #878992;
+}
+
 body {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: hsl(220deg 10% 14%);
-  color: #ffffff;
+  background-color: var(--background);
+  color: var(--text);
 }
 
 .game-board {
@@ -81,8 +89,8 @@ body {
   justify-content: center;
   align-items: center;
   background-color: inherit;
-  color: #fff;
-  border: 1px solid hsl(215, 10%, 25%);
+  color: inherit;
+  border: 1px solid var(--primary);
 }
 
 .game-board > .square:hover {
@@ -125,19 +133,22 @@ body {
   border-right: none;
 }
 
-.game-board > .square > span {
-  z-index: 0;
-  color: hsl(198deg 48% 45%);
+.game-dialog {
+  color: var(--text);
+  background-color: hsl(239deg 5% 6%);
+  border-radius: 10px;
+  border: none;
 }
 
-.game-dialog {
-  background-color: rgba(255, 255, 255, 0.1);
+.game-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.8);
+  filter: blur(10px);
 }
 
 .game-dialog-content {
   display: grid;
   justify-items: center;
-  gap: 1rem;
+  gap: 1rem 2rem;
   grid-template-columns: repeat(2, 1fr);
 }
 
@@ -151,7 +162,7 @@ body {
 
 .name-input-container {
   display: flex;
-  align-items: center;
+  align-items: start;
   flex-direction: column;
 }
 
@@ -159,6 +170,32 @@ body {
   width: 100%;
 }
 
-.game-dialog::backdrop {
-  background-color: rgba(255, 255, 255, 0.5);
+label {
+  display: none;
+}
+
+.input {
+  background-color: inherit;
+  border: none;
+  color: inherit;
+
+  border-bottom: 1px solid var(--text);
+}
+
+.button {
+  padding: 0.5em 1.5em;
+  text-transform: capitalize;
+  font-size: 20px;
+  color: var(--text);
+  border: none;
+  border-radius: 10px;
+  background: hsl(230deg 5% 26%);
+}
+
+.button:hover {
+  box-shadow: 0 0 20px var(--accent);
+}
+
+.button:active {
+  scale: 0.9;
 }

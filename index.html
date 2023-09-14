@@ -16,23 +16,23 @@
 
         <span class="name-input-container">
             <label for="player-one-name-input">First player name:</label>
-            <input data-js-player-one-input type="text" name="player-one-name-input" id="player-one-name-input" placeholder="Enter first player's name" required>
+            <input class="input" data-js-player-one-input type="text" name="player-one-name-input" id="player-one-name-input" placeholder="Enter first player's name">
         </span>
 
         <span class="name-input-container">
             <label for="player-two-name-input">Second player name:</label>
-            <input data-js-player-two-input type="text" name="player-two-name-input" id="player-two-name-input" placeholder="Enter second player's name" required>
+            <input class="input" data-js-player-two-input type="text" name="player-two-name-input" id="player-two-name-input" placeholder="Enter second player's name">
         </span>
 
-        <button class="game-start-button" data-js-game-start-button formmethod="dialog" type="submit">Start game</button>
+        <button class="game-start-button button" data-js-game-start-button formmethod="dialog" type="submit">Start game</button>
       </form>
     </dialog>
 
     <dialog class="game-dialog game-dialog-end" data-js-game-dialog-end>
       <form class="game-dialog-content" method="dialog">
         <h3 class="game-dialog-title" data-js-game-winner>The winner is X</h3>
-        <button data-js-game-restart-button formmethod="dialog" type="submit">Start again</button>
-        <button data-js-game-quit-button formmethod="dialog" type="submit">End the game</button>
+        <button class="button" data-js-game-restart-button formmethod="dialog" type="submit">Start again</button>
+        <button class="button" data-js-game-quit-button formmethod="dialog" type="submit">End the game</button>
       </form>
     </dialog>
   </body>
