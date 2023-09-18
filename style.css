@@ -175,7 +175,12 @@ label {
 }
 
 .checkbox-label {
-  display: block ruby;
+  display: inline-block;
+  text-wrap: none;
+}
+
+.checkbox-input {
+  width: 20px !important;
 }
 
 .checkbox-container {
