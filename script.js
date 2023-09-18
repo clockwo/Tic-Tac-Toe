@@ -1,3 +1,5 @@
+const BOARD_SIZE = 3;
+
 const displayController = (() => {
   const selectors = {
     board: "[data-js-game-board]",
@@ -34,9 +36,9 @@ const displayController = (() => {
 
   const renderSquareElements = () => {
     // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < BOARD_SIZE; i++) {
       // eslint-disable-next-line no-plusplus
-      for (let k = 0; k < 3; k++) {
+      for (let k = 0; k < BOARD_SIZE; k++) {
         boardElement.appendChild(createSquareElement(i, k));
       }
     }
@@ -115,19 +117,10 @@ const displayController = (() => {
 })();
 
 const Player = (name, mark) => {
-  let score = 0;
-
   const getName = () => name;
   const getMark = () => mark;
 
-  const incrementScore = () => {
-    score += 1;
-  };
-  const getScore = () => score;
-
   return {
-    incrementScore,
-    getScore,
     getMark,
     getName,
   };
@@ -157,13 +150,13 @@ const gameBoard = (() => {
     const tempMatrix = [[], []];
 
     // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < BOARD_SIZE; i++) {
       tempMatrix[0].push(mat[i][i]);
     }
 
     let temp = 2;
     // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < BOARD_SIZE; i++) {
       tempMatrix[1].push(mat[i][temp]);
       // eslint-disable-next-line no-plusplus
       temp--;
@@ -261,8 +254,8 @@ const computer = (() => {
 
   const makeTurn = (matrix) => {
     // Check if the AI is one move away from winning
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      for (let j = 0; j < BOARD_SIZE; j++) {
         if (!matrix[i][j]) {
           if (gameBoard.checkPotentialWin(i, j, "O")) {
             return [i, j];
@@ -272,8 +265,8 @@ const computer = (() => {
     }
 
     // Check if the player is one move away from winning and block them if they are
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      for (let j = 0; j < BOARD_SIZE; j++) {
         if (!matrix[i][j]) {
           if (gameBoard.checkPotentialWin(i, j, "X")) {
             return [i, j];
@@ -392,5 +385,5 @@ initGame();
  * TODO:
  * 1) Add element what shows which turn
  * 2) Add element what shows score and name of player / AI
- * 3) When player click button to restar (Update score and clear area)
+ * 3) When player click button to restart (Update score and clear area)
  */
