@@ -8,6 +8,7 @@
     <script src="script.js" defer></script>
   </head>
   <body>
+    <h1 data-js-current-turn>Test</h1>
     <section data-js-game-board class="game-board"></section>
 
     <dialog class="game-dialog game-dialog-start" data-js-game-dialog-start>
@@ -16,12 +17,17 @@
 
         <span class="name-input-container">
             <label for="player-one-name-input">First player name:</label>
-            <input class="input" data-js-player-one-input type="text" name="player-one-name-input" id="player-one-name-input" placeholder="Enter first player's name">
+            <input class="input" data-js-player-one-input type="text" name="player-one-name-input" id="player-one-name-input" placeholder="Enter first player's name (X)">
         </span>
 
         <span class="name-input-container">
             <label for="player-two-name-input">Second player name:</label>
-            <input class="input" data-js-player-two-input type="text" name="player-two-name-input" id="player-two-name-input" placeholder="Enter second player's name">
+            <input class="input" data-js-player-two-input type="text" name="player-two-name-input" id="player-two-name-input" placeholder="Enter second player's name (O)">
+        </span>
+
+        <span class="name-input-container checkbox-container">
+          <input data-js-turn-ai type="checkbox" name="ai" id="ai">
+          <label class="checkbox-label" for="ai">Play against AI</label>
         </span>
 
         <button class="game-start-button button" data-js-game-start-button formmethod="dialog" type="submit">Start game</button>

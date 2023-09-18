@@ -1,6 +1,7 @@
 const displayController = (() => {
   const selectors = {
     board: "[data-js-game-board]",
+    turn: "[data-js-current-turn]",
     square: "[data-js-square]",
     restart: "[data-js-game-restart-button]",
     quit: "[data-js-game-quit-button]",
@@ -10,6 +11,7 @@ const displayController = (() => {
     winner: "[data-js-game-winner]",
     firstPlayer: "[data-js-player-one-input]",
     secondPlayer: "[data-js-player-two-input]",
+    turnAI: "[data-js-turn-ai]",
   };
   const boardElement = document.querySelector(selectors.board);
   const submit = document.querySelector(selectors.submit);
@@ -17,6 +19,9 @@ const displayController = (() => {
   const secondPlayerElement = document.querySelector(selectors.secondPlayer);
   const startElement = document.querySelector(selectors.start);
   const quitButtonElement = document.querySelector(selectors.quit);
+  const currentTurnElement = document.querySelector(selectors.turn);
+  const turnAIElement = document.querySelector(selectors.turnAI);
+  const restartElement = document.querySelector(selectors.restart);
 
   const createSquareElement = (row, column) => {
     const squareElement = document.createElement("button");
@@ -54,10 +59,16 @@ const displayController = (() => {
 
   const getBoardElement = () => boardElement;
 
+  const isAI = () => turnAIElement.checked;
+
   const getSubmitElement = () => submit;
   const getQuitButtonElement = () => quitButtonElement;
 
   const getSquareElements = () => document.querySelectorAll(selectors.square);
+
+  const getCurrentElement = () => currentTurnElement;
+
+  const getRestartElement = () => restartElement;
 
   const clearSquareElements = () => {
     boardElement.replaceChildren();
@@ -80,18 +91,26 @@ const displayController = (() => {
     secondPlayerElement.value,
   ];
 
+  const setCurrentTurn = (name) => {
+    currentTurnElement.textContent = name;
+  };
+
   return {
+    setCurrentTurn,
     renderSquareElements,
     getSquareElements,
     getBoardElement,
     getSubmitElement,
     getQuitButtonElement,
+    getCurrentElement,
+    getRestartElement,
     updateSquareElement,
     showWinner,
     openOptions,
     closeOptions,
     getPlayersName,
     clearSquareElements,
+    isAI,
   };
 })();
 
@@ -182,6 +201,20 @@ const gameBoard = (() => {
     winner = checkWinner(activePlayerMark);
   };
 
+  const checkPotentialWin = (row, column, activePlayerMark) => {
+    matrix[row][column] = activePlayerMark;
+    invertedMatrix[column][row] = activePlayerMark;
+
+    if (checkWinner(activePlayerMark)) {
+      matrix[row][column] = "";
+      invertedMatrix[column][row] = "";
+      return true;
+    }
+    matrix[row][column] = "";
+    invertedMatrix[column][row] = "";
+    return false;
+  };
+
   const setGameState = (firstPlayer, secondPlayer) => {
     gameState.currentPlayer = firstPlayer;
     gameState.players = [firstPlayer, secondPlayer];
@@ -210,6 +243,8 @@ const gameBoard = (() => {
     getMatrix,
     setGameBoardValue,
     setGameState,
+    checkPotentialWin,
+    checkWinner,
     getLastUpdatedValue,
     getCurrentPlayer,
     getWinner,
@@ -218,13 +253,6 @@ const gameBoard = (() => {
   };
 })();
 
-// Select game against AI
-// Player turn
-// AI turn
-// 1) AI get current matrix
-// 2) Make random turn if section is empty
-// 3) send turn
-
 const computer = (() => {
   const isComputerTurn = false;
   const mark = "O";
@@ -232,6 +260,29 @@ const computer = (() => {
   const getRandomCoordinate = () => Math.floor(Math.random() * 3);
 
   const makeTurn = (matrix) => {
+    // Check if the AI is one move away from winning
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (!matrix[i][j]) {
+          if (gameBoard.checkPotentialWin(i, j, "O")) {
+            return [i, j];
+          }
+        }
+      }
+    }
+
+    // Check if the player is one move away from winning and block them if they are
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (!matrix[i][j]) {
+          if (gameBoard.checkPotentialWin(i, j, "X")) {
+            return [i, j];
+          }
+        }
+      }
+    }
+
+    // If the player is not one move away from winning, make a random move
     let isNotFound = true;
     let coordinates = [];
     while (isNotFound) {
@@ -260,6 +311,12 @@ const resetGame = () => {
   displayController.renderSquareElements();
 };
 
+const updateCurrentPlayer = () => {
+  const currentTurn = displayController.getCurrentElement();
+  const currentPlayer = gameBoard.getCurrentPlayer();
+  currentTurn.innerHTML = currentPlayer.getName();
+};
+
 const initGame = () => {
   displayController.openOptions();
   displayController.renderSquareElements();
@@ -273,14 +330,35 @@ const initGame = () => {
     const secondPlayer = Player(secondPlayerName, "O");
     gameBoard.setGameState(firstPlayer, secondPlayer);
 
+    updateCurrentPlayer();
     displayController.closeOptions();
+  });
+
+  const restartButtonElement = displayController.getRestartElement();
+  restartButtonElement.addEventListener("click", () => {
+    resetGame();
+    updateCurrentPlayer();
   });
 
   const quitButton = displayController.getQuitButtonElement();
   quitButton.addEventListener("click", () => {
     displayController.openOptions();
     resetGame();
+    updateCurrentPlayer();
   });
+};
+
+const playAI = () => {
+  if (gameBoard.getWinner()) {
+    displayController.showWinner(gameBoard.getWinner());
+    resetGame();
+  } else {
+    gameBoard.setGameBoardValue(
+      ...computer.makeTurn(gameBoard.getMatrix()),
+      computer.getMark(),
+    );
+    displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
+  }
 };
 
 displayController.getBoardElement().addEventListener("click", ({ target }) => {
@@ -293,19 +371,13 @@ displayController.getBoardElement().addEventListener("click", ({ target }) => {
     targetColumn,
     gameBoard.getCurrentPlayer().getMark(),
   );
-
-  // gameBoard.switchPlayer();
   displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
 
-  if (gameBoard.getWinner()) {
-    displayController.showWinner(gameBoard.getWinner());
-    resetGame();
+  if (displayController.isAI()) {
+    playAI();
   } else {
-    gameBoard.setGameBoardValue(
-      ...computer.makeTurn(gameBoard.getMatrix()),
-      computer.getMark(),
-    );
-    displayController.updateSquareElement(...gameBoard.getLastUpdatedValue());
+    gameBoard.switchPlayer();
+    updateCurrentPlayer();
   }
 
   if (gameBoard.getWinner()) {
@@ -315,3 +387,10 @@ displayController.getBoardElement().addEventListener("click", ({ target }) => {
 });
 
 initGame();
+
+/*
+ * TODO:
+ * 1) Add element what shows which turn
+ * 2) Add element what shows score and name of player / AI
+ * 3) When player click button to restar (Update score and clear area)
+ */
